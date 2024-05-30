@@ -93,7 +93,7 @@ export default class Pdf extends Component {
         },
         onError: (error) => {
         },
-        onPageSingleTap: (page, x, y) => {
+        onPageSingleTap: (page, pageWidth, pageHeight, x, y) => {
         },
         onScaleChanged: (scale) => {
         },
@@ -356,9 +356,6 @@ export default class Pdf extends Component {
         let message = event.nativeEvent.message.split('|');
         //__DEV__ && console.log("onChange: " + message);
         if (message.length > 0) {
-            if (message.length > 5) {
-                message[4] = message.splice(4).join('|');
-            }
             if (message[0] === 'loadComplete') {
                 this.props.onLoadComplete && this.props.onLoadComplete(Number(message[1]), this.state.path, {
                     width: Number(message[2]),
@@ -370,7 +367,7 @@ export default class Pdf extends Component {
             } else if (message[0] === 'error') {
                 this._onError(new Error(message[1]));
             } else if (message[0] === 'pageSingleTap') {
-                this.props.onPageSingleTap && this.props.onPageSingleTap(Number(message[1]), Number(message[2]), Number(message[3]));
+                this.props.onPageSingleTap && this.props.onPageSingleTap(Number(message[1]), Number(message[2]), Number(message[3]), Number(message[4]), Number(message[5]));
             } else if (message[0] === 'scaleChanged') {
                 this.props.onScaleChanged && this.props.onScaleChanged(Number(message[1]));
             } else if (message[0] === 'linkPressed') {

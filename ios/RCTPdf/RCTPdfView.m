@@ -123,7 +123,7 @@ const float MIN_SCALE = 1.0f;
                 //Release old doc
                 _pdfDocument = Nil;
             }
-            
+
             if ([_path hasPrefix:@"blob:"]) {
                 RCTBlobManager *blobManager = [_bridge moduleForName:@"BlobModule"];
                 NSURL *blobURL = [NSURL URLWithString:_path];
@@ -132,7 +132,7 @@ const float MIN_SCALE = 1.0f;
                     _pdfDocument = [[PDFDocument alloc] initWithData:blobData];
                 }
             } else {
-            
+
                 // decode file path
                 _path = (__bridge_transfer NSString *)CFURLCreateStringByReplacingPercentEscapes(NULL, (CFStringRef)_path, CFSTR(""));
                 NSURL *fileURL = [NSURL fileURLWithPath:_path];
@@ -507,7 +507,10 @@ const float MIN_SCALE = 1.0f;
     PDFPage *pdfPage = [_pdfView pageForPoint:point nearest:NO];
     if (pdfPage) {
         unsigned long page = [_pdfDocument indexForPage:pdfPage];
+        CGPoint locationOnPage = [_pdfView convertPoint:point toPage:pdfPage];
+        CGRect pageRect = [pdfPage boundsForBox:kPDFDisplayBoxCropBox];
         _onChange(@{ @"message": [[NSString alloc] initWithString:[NSString stringWithFormat:@"pageSingleTap|%lu|%f|%f", page+1, point.x, point.y]]});
+        _onChange(@{ @"message": [[NSString alloc] initWithString:[NSString stringWithFormat:@"pageSingleTap|%lu|%f|%f|%f|%f", page+1, pageRect.size.width, pageRect.size.height, locationOnPage.x, locationOnPage.y]]});
     }
 
     //[self setNeedsDisplay];
